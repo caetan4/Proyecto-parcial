@@ -15,8 +15,8 @@
   </header>
 
   <div class="botones">
-    <button>Botón 1</button>
-    <button>Botón 2</button>
+    <button class="btn rojo">Botón 1 </button>
+    <button class="btn azul" >Botón 2</button>
   </div>
 
   <footer>
@@ -32,45 +32,8 @@
       <rect fill="#fff" x="58.11" y="8.82" width="3.07" height="3.21"/>
     </svg>
   </footer>
-
-  <!-- Usamos módulos ES6 -->
-  <script type="module">
-    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";
-
-    const canvas = document.getElementById("lienzo");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // Escena y cámara
-    const scene = new THREE.Scene();
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas });
-    renderer.setSize(canvas.width, canvas.height);
-    renderer.setClearColor("#0a0c2c");
-    const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
-
-    // Geometría: Icosaedro
-    const geo = new THREE.IcosahedronGeometry(1.5, 0);
-    const material = new THREE.MeshStandardMaterial({ color: "#ffffff" });
-    const mesh = new THREE.Mesh(geo, material);
-    mesh.position.z = -7;
-    scene.add(mesh);
-
-    // Luces
-    const frontLight = new THREE.PointLight("#ffffff", 300, 100);
-    frontLight.position.set(7, 3, 3);
-    scene.add(frontLight);
-
-    const rimLight = new THREE.PointLight("#0066ff", 50, 100);
-    rimLight.position.set(-7, -3, -7);
-    scene.add(rimLight);
-
-    // Animación
-    function animate() {
-      requestAnimationFrame(animate);
-      mesh.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    }
-    animate();
-  </script>
+ <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>

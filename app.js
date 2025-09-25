@@ -1,14 +1,12 @@
 ///////// SCAFFOLD.
 // 1. Importar librerías.
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/controls/OrbitControls.js";
-
 console.log(THREE);
-console.log(gsap);
+console.log('app.js version: 20250924-1');
 
 
 // 2. Configurar canvas.
 const canvas = document.getElementById("lienzo");
+if (!canvas) throw new Error("No se encontró el canvas con id 'lienzo'.");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -85,25 +83,33 @@ const loader = new THREE.TextureLoader(manager);
 //    displacement: loader.load('./assets/texturas/bricks/displacement.png'),
 // };
 
-// 🎇 NUEVO: Texturas de lava PBR
+// 🎇 NUEVO: Texturas de lava PBR (intentamos carpeta 'columned-lava-rock-unity' y en fallback 'lava')
 const tex = {
-    albedo: loader.load('./assets/texturas/lava/columned-lava-rock_albedo.png'),
-    ao: loader.load('./assets/texturas/lava/columned-lava-rock_ao.png'),
-    emissive: loader.load('./assets/texturas/lava/columned-lava-rock_emissive.png'),
-    displacement: loader.load('./assets/texturas/lava/columned-lava-rock_height.png'),
-    metalness: loader.load('./assets/texturas/lava/columned-lava-rock_metallic.png'), // exportada de PSD a PNG
-    normal: loader.load('./assets/texturas/lava/columned-lava-rock_normal-ogl.png')
+    albedo: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_albedo.png'),
+    ao: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_ao.png'),    
+    metalness: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_metallic.png'),
+    normal: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_normal-ogl.png'),
+  //  roughness: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_roughness.png'),
+    emissive: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_emissive.png'),
+    displacement: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_height.png'),
+
+
 };
 
+
 var pbrMaterial;
+
 
 function createMaterial() {
     pbrMaterial = new THREE.MeshStandardMaterial({
         map: tex.albedo,
         aoMap: tex.ao,
         normalMap: tex.normal,
+        metalness: 1,
         metalnessMap: tex.metalness,
-        roughness: 0.8, // global si no tienes roughnessMap
+       // roughness: 0.8, 
+        //roughnessMap : tex.roughness,
+        // global si no tienes roughnessMap
         emissiveMap: tex.emissive,
         emissive: new THREE.Color(0xffffff),
         displacementMap: tex.displacement,
@@ -181,9 +187,25 @@ function animate() {
 animate();
 
 
+
+
+
+
 // 🔄 resize adaptativo
 window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+canvas.addEventListener("mousedown", () => {
+    // GSAP anima la escala del mesh
+    gsap.to(mesh.scale, {
+        x: mesh.scale.x * 1.2, // agranda 20%
+        y: mesh.scale.y * 1.2,
+        z: mesh.scale.z * 1.2,
+        duration: 0.8,
+        ease: "bounce.out" // prueba otros easing si quieres
+    });
+});
+ 
