@@ -80,10 +80,20 @@ footer {
     border-radius: 8px; /* opcional: puedes quitarlo para que sea totalmente cuadrado */
 }
 
-.btn.rojo {
-    background-color: crimson;
+
+.materialSwitch {
+    position: relative;
+    width: 100px;
+    height: 50px;
+    background-size: cover;
+
 }
 
-.btn.azul {
-    background-color: royalblue;
+#bricksMaterial {
+    background-image: url(assets/texturas/bricks/albedo.png);
 }
+
+#lavaMaterial {
+    background-image: url(assets/texturas/columned-lava-rock-unity/columned-lava-rock_albedo.png)
+}
+
