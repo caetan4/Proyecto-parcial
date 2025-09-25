@@ -58,4 +58,32 @@ footer {
     bottom: 5vh;
     right: 2.2vh;
     width: 10vh;
+
+    
+}
+.botones {
+    position: absolute;
+    top: 20vh;   /* los puedes mover según quieras */
+    left: 5vw;
+    display: flex;
+    gap: 2vh;
+}
+
+.btn {
+    width: 80px;
+    height: 80px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    border-radius: 8px; /* opcional: puedes quitarlo para que sea totalmente cuadrado */
+}
+
+.btn.rojo {
+    background-color: crimson;
+}
+
+.btn.azul {
+    background-color: royalblue;
 }

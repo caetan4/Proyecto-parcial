@@ -1,7 +1,11 @@
 ///////// SCAFFOLD.
 // 1. Importar librerías.
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/controls/OrbitControls.js";
+
 console.log(THREE);
 console.log(gsap);
+
 
 // 2. Configurar canvas.
 const canvas = document.getElementById("lienzo");
@@ -17,7 +21,8 @@ const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1
 
 // 3.1 Configurar mesh.
 //const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 5, 2);
- const geo = new THREE.SphereGeometry(1.5, 128, 128);
+// const geo = new THREE.SphereGeometry(1.5, 128, 128);
+ const geo = new THREE.IcosahedronGeometry(1.5, 0); 
 
 const material = new THREE.MeshStandardMaterial({
     color: "#ffffff",
