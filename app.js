@@ -72,19 +72,19 @@ manager.onError = function (url) {
 // 2. "Texture loader" para nuestros assets.
 const loader = new THREE.TextureLoader(manager);
 
-// 3. Cargamos texturas guardadas en el folder del proyecto.
-// ///////// EJEMPLO DE LADRILLOS (comentado).
-// const tex = {
-//    albedo: loader.load('./assets/texturas/bricks/albedo.png'),
-//    ao: loader.load('./assets/texturas/bricks/ao.png'),
-//    metalness: loader.load('./assets/texturas/bricks/metallic.png'),
-//    normal: loader.load('./assets/texturas/bricks/normal.png'),
-//    roughness: loader.load('./assets/texturas/bricks/roughness.png'),
-//    displacement: loader.load('./assets/texturas/bricks/displacement.png'),
-// };
+//3. Cargamos texturas guardadas en el folder del proyecto.
+///////// EJEMPLO DE LADRILLOS (comentado).
+const brickTexture= {
+   albedo: loader.load('./assets/texturas/bricks/albedo.png'),
+   ao: loader.load('./assets/texturas/bricks/ao.png'),
+   metalness: loader.load('./assets/texturas/bricks/metallic.png'),
+   normal: loader.load('./assets/texturas/bricks/normal.png'),
+   roughness: loader.load('./assets/texturas/bricks/roughness.png'),
+   displacement: loader.load('./assets/texturas/bricks/displacement.png'),
+};
 
 // 🎇 NUEVO: Texturas de lava PBR (intentamos carpeta 'columned-lava-rock-unity' y en fallback 'lava')
-const tex = {
+const lavaTextures = {
     albedo: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_albedo.png'),
     ao: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_ao.png'),    
     metalness: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_metallic.png'),
@@ -97,28 +97,27 @@ const tex = {
 };
 
 
-var pbrMaterial;
-
+var lavaMaterial;
 
 function createMaterial() {
-    pbrMaterial = new THREE.MeshStandardMaterial({
-        map: tex.albedo,
-        aoMap: tex.ao,
-        normalMap: tex.normal,
+    lavaMaterial = new THREE.MeshStandardMaterial({
+        map: lavaTextures.albedo,
+        aoMap: lavaTextures.ao,
+        normalMap: lavaTextures.normal,
         metalness: 1,
-        metalnessMap: tex.metalness,
+        metalnessMap: lavaTextures.metalness,
        // roughness: 0.8, 
         //roughnessMap : tex.roughness,
         // global si no tienes roughnessMap
-        emissiveMap: tex.emissive,
+        emissiveMap: lavaTextures.emissive,
         emissive: new THREE.Color(0xffffff),
-        displacementMap: tex.displacement,
+        displacementMap: lavaTextures.displacement,
         displacementScale: 0.25,
         side: THREE.FrontSide,
         // wireframe: true,
     });
 
-    mesh.material = pbrMaterial;
+    mesh.material = lavaMaterial;
 }
 
 
