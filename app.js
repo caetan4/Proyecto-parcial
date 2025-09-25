@@ -22,11 +22,13 @@ const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1
 // 3.1 Configurar mesh.
 //const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 5, 2);
 // const geo = new THREE.SphereGeometry(1.5, 128, 128);
- const geo = new THREE.IcosahedronGeometry(1.5, 0); 
+const geo = new THREE.IcosahedronGeometry(1.5, 4); // detail > 0 para displacement
+geo.setAttribute("uv2", new THREE.BufferAttribute(geo.attributes.uv.array, 2));
 
+// Material temporal (será reemplazado en createMaterial)
 const material = new THREE.MeshStandardMaterial({
     color: "#ffffff",
-    //wireframe: true,
+    //wireframe: true,SS
 });
 const mesh = new THREE.Mesh(geo, material);
 scene.add(mesh);
@@ -48,81 +50,96 @@ scene.add(rimLight);
 //// A) Cargar múltiples texturas
 // //// A) Cargar múltiples texturas.
 // 1. "Loading manager".
+
 const manager = new THREE.LoadingManager();
 
 manager.onStart = function (url, itemsLoaded, itemsTotal) {
-     var text = "holaa mundo"  ;
-     var text2 = '${text}, como estas?'
-   console.log(`Iniciando carga de: ${url} (${itemsLoaded + 1}/${itemsTotal})`);
+    var text = "holaa mundo";
+    var text2 = '${text}, como estas?';
+    console.log(`Iniciando carga de: ${url} (${itemsLoaded + 1}/${itemsTotal})`);
 };
 
 manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-   console.log(`Cargando: ${url} (${itemsLoaded}/${itemsTotal})`);
+    console.log(`Cargando: ${url} (${itemsLoaded}/${itemsTotal})`);
 };
 
 manager.onLoad = function () {
-   console.log('✅ ¡Todas las texturas cargadas!');
-   createMaterial();
+    console.log('✅ ¡Todas las texturas cargadas!');
+    createMaterial();
 };
 
 manager.onError = function (url) {
-   console.error(`❌ Error al cargar: ${url}`);
+    console.error(`❌ Error al cargar: ${url}`);
 };
 // 2. "Texture loader" para nuestros assets.
 const loader = new THREE.TextureLoader(manager);
 
 // 3. Cargamos texturas guardadas en el folder del proyecto.
+// ///////// EJEMPLO DE LADRILLOS (comentado).
+// const tex = {
+//    albedo: loader.load('./assets/texturas/bricks/albedo.png'),
+//    ao: loader.load('./assets/texturas/bricks/ao.png'),
+//    metalness: loader.load('./assets/texturas/bricks/metallic.png'),
+//    normal: loader.load('./assets/texturas/bricks/normal.png'),
+//    roughness: loader.load('./assets/texturas/bricks/roughness.png'),
+//    displacement: loader.load('./assets/texturas/bricks/displacement.png'),
+// };
+
+// 🎇 NUEVO: Texturas de lava PBR
 const tex = {
-   albedo: loader.load('./assets/texturas/bricks/albedo.png'),
-   ao: loader.load('./assets/texturas/bricks/ao.png'),
-   metalness: loader.load('./assets/texturas/bricks/metallic.png'),
-   normal: loader.load('./assets/texturas/bricks/normal.png'),
-   roughness: loader.load('./assets/texturas/bricks/roughness.png'),
-   displacement: loader.load('./assets/texturas/bricks/displacement.png'),
+    albedo: loader.load('./assets/texturas/lava/columned-lava-rock_albedo.png'),
+    ao: loader.load('./assets/texturas/lava/columned-lava-rock_ao.png'),
+    emissive: loader.load('./assets/texturas/lava/columned-lava-rock_emissive.png'),
+    displacement: loader.load('./assets/texturas/lava/columned-lava-rock_height.png'),
+    metalness: loader.load('./assets/texturas/lava/columned-lava-rock_metallic.png'), // exportada de PSD a PNG
+    normal: loader.load('./assets/texturas/lava/columned-lava-rock_normal-ogl.png')
 };
 
 var pbrMaterial;
 
 function createMaterial() {
-   pbrMaterial = new THREE.MeshStandardMaterial({
-       map: tex.albedo,
-       aoMap: tex.ao,
-       metalnessMap: tex.metalness,
-       normalMap: tex.normal,
-       roughnessMap: tex.roughness,
-       displacementMap: tex.displacement,
-       displacementScale: 0.4,
-       side: THREE.FrontSide,
-       // wireframe: true,
-   });
+    pbrMaterial = new THREE.MeshStandardMaterial({
+        map: tex.albedo,
+        aoMap: tex.ao,
+        normalMap: tex.normal,
+        metalnessMap: tex.metalness,
+        roughness: 0.8, // global si no tienes roughnessMap
+        emissiveMap: tex.emissive,
+        emissive: new THREE.Color(0xffffff),
+        displacementMap: tex.displacement,
+        displacementScale: 0.25,
+        side: THREE.FrontSide,
+        // wireframe: true,
+    });
 
-   mesh.material = pbrMaterial;
+    mesh.material = pbrMaterial;
 }
 
-//// B) Rotación al scrollear.
+
 
 //// B) Rotación al scrollear.
+
 // 1. Crear un objeto con la data referente al SCROLL para ocuparla en todos lados.
 var scroll = {
-   y: 0,
-   lerpedY: 0,
-   speed: 0.010,
-   cof: 0.07
+    y: 0,
+    lerpedY: 0,
+    speed: 0.010,
+    cof: 0.07
 };
 
 // 2. Escuchar el evento scroll y actualizar el valor del scroll.
 function updateScrollData(eventData) {
-   scroll.y += eventData.deltaX * scroll.speed;
+    scroll.y += eventData.deltaX * scroll.speed;
 }
 
 window.addEventListener("wheel", updateScrollData);
 // 3. Aplicar el valor del scroll a la rotación del mesh. (en el loop de animación)
 function updateMeshRotation() {
-   mesh.rotation.y = scroll.lerpedY;
+    mesh.rotation.y = scroll.lerpedY;
 }
 // 5. Vamos a suavizar un poco el valor de rotación para que los cambios de dirección sean menos bruscos.
 function lerpScrollY() {
-   scroll.lerpedY += (scroll.y - scroll.lerpedY) * scroll.cof;
+    scroll.lerpedY += (scroll.y - scroll.lerpedY) * scroll.cof;
 }
 
 
@@ -131,22 +148,22 @@ function lerpScrollY() {
 ///////// FIN DE LA CLASE.
 
 var mouse = {
-   x: 0,
-   y: 0,
-   normalOffset: {
-       x: 0,
-       y: 0
-   },
-   lerpNormalOffset: {
-       x: 0,
-       y: 0
-   },
+    x: 0,
+    y: 0,
+    normalOffset: {
+        x: 0,
+        y: 0
+    },
+    lerpNormalOffset: {
+        x: 0,
+        y: 0
+    },
 
-   cof: 0.07,
-   gazeRange: {
-       x: 7,
-       y: 3
-   }
+    cof: 0.07,
+    gazeRange: {
+        x: 7,
+        y: 3
+    }
 }
 
 /////////
@@ -154,11 +171,19 @@ var mouse = {
 function animate() {
     requestAnimationFrame(animate);
 
-   // mesh.rotation.x -= 0.005;
+    // mesh.rotation.x -= 0.005;
 
-   lerpScrollY();
-   updateMeshRotation();
+    lerpScrollY();
+    updateMeshRotation();
     renderer.render(scene, camera);
 }
 
 animate();
+
+
+// 🔄 resize adaptativo
+window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
