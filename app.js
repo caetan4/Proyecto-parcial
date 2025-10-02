@@ -14,7 +14,8 @@ canvas.height = window.innerHeight;
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.width, canvas.height);
-renderer.setClearColor("#0a0c2c");
+renderer.setClearColor(0x00019);
+
 const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
 camera.position.z = 7;
 // 3.1 Configurar mesh.
@@ -24,18 +25,34 @@ const geo = new THREE.IcosahedronGeometry(1.5, 4); // detail > 0 para displaceme
 geo.setAttribute("uv2", new THREE.BufferAttribute(geo.attributes.uv.array, 2));
 
 
+
+
+
 const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: "#ffffff" }));
 mesh.position.z = -7;
 scene.add(mesh);
 
 // 3.2 Crear luces.
-const frontLight = new THREE.PointLight("#ffffff", 300, 100);
+const frontLight = new THREE.PointLight(0x1b046e, 1000, 100);
 frontLight.position.set(7, 3, 3);
 scene.add(frontLight);
 
-const rimLight = new THREE.PointLight("#0066ff", 50, 100);
+const rimLight   = new THREE.PointLight(0x0d72099, 50, 10);
 rimLight.position.set(-7, -3, -7);
 scene.add(rimLight);
+
+// Activar sombras en el renderer
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+// Crear un plano como suelo
+const floorGeometry = new THREE.PlaneGeometry(100, 100);
+const floorMaterial = new THREE.MeshStandardMaterial({
+  color: 0x555555,
+  roughness: 0.8,
+  metalness: 0.2
+});
+
 
 
 

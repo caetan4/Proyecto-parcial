@@ -1,17 +1,11 @@
-@font-face { 
-  font-family: "Formula";
-  src:
-    local("Formula"),
-    url("./assets/fonts/PPFormula-CondensedBlack.otf") format("opentype");
-}
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Formula", sans-serif;
+ font-family: "Palette Mosaic", cursive;  /* Todo el texto con Palette Mosaic */
   text-transform: uppercase;
-  color: aqua;
+
 }
 
 #lienzo {
@@ -19,7 +13,7 @@
   top: 0; left: 0;
   width: 100%;
   height: 100%;
-  background-color: #2020cc;
+  background-color: #000000;
 }
 
 header {
@@ -29,26 +23,51 @@ header {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  
 }
 
 .title {
+    
   position: relative;
   text-align: right;
   font-size: 4vh;
   font-weight: lighter;
+  -webkit-font-smoothing: antialiased;
+ 
+  color: rgb(11, 16, 101);
 }
 
 footer {
+    font-family: "Palette Mosaic", cursive; 
   position: absolute;
   bottom: 0; left: 0;
   width: 100%;
-  mix-blend-mode: luminosity;
+ /*mix-blend-mode: luminosity;*/
+  color: rgb(144, 70, 70);
+
 }
 
 .subtitle {
   position: relative;
   padding: 2vh 0 0 2vh;
-  font-size: 14vh;
+  font-size: 12vh;
+  color: #3f0dbe;
+  
+}
+
+/* Nuevo link Instagram con Rock Salt */
+.insta {
+  display: block;
+  font-family: "Rock Salt", cursive;
+  font-size: 3vh;
+  color: #49162b;
+  text-decoration: none;
+  margin-left: 2vh;
+  margin-bottom: -1vh;
+}
+.insta:hover {
+  color: #931149;
+  text-decoration: underline;
 }
 
 #centroLogo {
@@ -58,12 +77,26 @@ footer {
   width: 10vh;
 }
 
+/* Texto de instrucciones con Big Shoulders */
+.instrucciones {
+  position: absolute;
+  bottom: 12vh; /* justo arriba del logo */
+  right: 2vh;
+  text-align: right;
+  font-family: "Big Shoulders", sans-serif;
+  font-size: 2.5vh;
+  line-height: 1.2;
+  color: rgb(76, 103, 255);
+}
+
+
 .botones {
   position: absolute;
   top: 20vh;
   left: 5vw;
   display: flex;
   gap: 2vh;
+  
 }
 
 .btn {
@@ -73,17 +106,18 @@ footer {
   cursor: pointer;
   font-size: 1rem;
   font-weight: bold;
-  color: white;
+  
   border-radius: 8px;
   background-size: cover;
   background-position: center;
 }
 
 #boton1 {
-
+  color: rgb(221, 129, 80);
   background-image: url(assets/texturas/columned-lava-rock-unity/columned-lava-rock_albedo.png);
 }
 
 #boton2 {
+    color: rgb(59, 25, 19);
   background-image: url(assets/texturas/bricks/albedo.png);
 }
