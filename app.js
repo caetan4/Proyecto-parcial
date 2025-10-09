@@ -154,15 +154,14 @@ function createMaterials() {
   vinesMaterial = new THREE.MeshStandardMaterial({
     envMap: envMap,
     metalness: 0.5,
+  
     
     map: vinesTextures.albedo,
     aoMap: vinesTextures.ao,
     normalMap: vinesTextures.normal,
     roughnessMap: vinesTextures.roughness,
-   
+
     displacementMap: vinesTextures.height,
-    
-    
 
     side: THREE.FrontSide,
   });
@@ -211,8 +210,7 @@ boton3.addEventListener("mousedown", function() {
 
 boton4.addEventListener("mousedown", function() {
   mesh.material = vinesMaterial;
-   mesh2.material = lavaMaterial;
-  
+  mesh2.material = brickMaterial;
 });
 
 // 7. Scroll rotation
