@@ -17,12 +17,12 @@ renderer.setSize(canvas.width, canvas.height);
 renderer.setClearColor(0x00019);
 
 const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
-camera.position.z = 7;
+camera.position.z = 10;
 
 // 3.1 Configurar mesh.
 //const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 2,2);
 //const geo = new THREE.SphereGeometry(1.5, 128, 128);
-const geom= new THREE.TorusGeometry( 3.4, 0.3, 16, 5 ); 
+const geom= new THREE.TorusGeometry( 3.4, 0.1, 16, 5 ); 
 const geo = new THREE.IcosahedronGeometry(1.5,4); 
 geo.setAttribute("uv2", new THREE.BufferAttribute(geo.attributes.uv.array, 2));
 geom.setAttribute("uv2", new THREE.BufferAttribute(geom.attributes.uv.array, 2));
@@ -98,7 +98,16 @@ const rustedTextures = {
   roughness: loader.load('./assets/texturas/rusted/roughness.png'),
 };
 
-let brickMaterial, lavaMaterial, rustedMaterial;
+const vinesTextures = {
+  albedo: loader.load('./assets/texturas/vines/vines_albedo.png'),
+  ao: loader.load('./assets/texturas/vines/vines_ao.png'),
+  metalness: loader.load('./assets/texturas/vines/vines_metallic.png'),
+  normal: loader.load('./assets/texturas/vines/vines_normal-ogl.png'),
+  height: loader.load('./assets/texturas/vines/vines_height.png'),
+
+};
+
+let brickMaterial, lavaMaterial, rustedMaterial, vinesMaterial;
 
 function createMaterials() {
   brickMaterial = new THREE.MeshStandardMaterial({
@@ -142,16 +151,31 @@ function createMaterials() {
 
   });
 
+  vinesMaterial = new THREE.MeshStandardMaterial({
+    envMap: envMap,
+    metalness: 0.5,
+    
+    map: vinesTextures.albedo,
+    aoMap: vinesTextures.ao,
+    normalMap: vinesTextures.normal,
+    roughnessMap: vinesTextures.roughness,
+   
+    displacementMap: vinesTextures.height,
+    
+    
+
+    side: THREE.FrontSide,
+  });
   mesh.material = brickMaterial;
   
-  mesh2.material = lavaMaterial; // inicial por default
+  mesh2.material = vinesMaterial; // inicial por default
 }
 
 
 const envMap = cubeTexLoader.load([
-   './assets/texturas/fondo/posx.jpg', './assets/texturas/fondo/negx.jpg',   // +X, -X
-   './assets/texturas/fondo/posy.jpg', './assets/texturas/fondo/negy.jpg',   // +Y, -Y
-   './assets/texturas/fondo/posz.jpg', './assets/texturas/fondo/negz.jpg'    // +Z, -Z
+   './assets/texturas/fondo2/posx.jpg', './assets/texturas/fondo2/negx.jpg',   // +X, -X
+   './assets/texturas/fondo2/posy.jpg', './assets/texturas/fondo2/negy.jpg',   // +Y, -Y
+   './assets/texturas/fondo2/posz.jpg', './assets/texturas/fondo2/negz.jpg'    // +Z, -Z
 ]);
 
 
@@ -168,20 +192,27 @@ manager.onLoad = function () {
 const boton1 = document.getElementById("boton1");
 const boton2 = document.getElementById("boton2");
 const boton3 = document.getElementById("boton3");
+const boton4 = document.getElementById("boton4");
 
 boton1.addEventListener("mousedown", function() {
   mesh.material = lavaMaterial;
-  mesh2.material = brickMaterial;
+  //mesh2.material = vinesMaterial;
 });
 
 boton2.addEventListener("mousedown", function() {
   mesh.material = brickMaterial;
-  mesh2.material = rustedMaterial;
+ // mesh2.material = rustedMaterial;
 });
 
 boton3.addEventListener("mousedown", function() {
   mesh.material = rustedMaterial;
-  mesh2.material = lavaMaterial;
+ // mesh2.material = lavaMaterial;
+});
+
+boton4.addEventListener("mousedown", function() {
+  mesh.material = vinesMaterial;
+   mesh2.material = lavaMaterial;
+  
 });
 
 // 7. Scroll rotation

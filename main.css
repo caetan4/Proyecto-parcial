@@ -107,6 +107,7 @@ footer {
   left: 5vw;
   display: flex;
   gap: 2vh;
+ 
   
 }
 
@@ -136,4 +137,9 @@ footer {
 #boton3 {
     color: rgb(59, 25, 19);
   background-image: url(assets/texturas/rusted/albedo.png);
+}
+
+#boton4 {
+    color: rgb(59, 25, 19);
+  background-image: url(assets/texturas/vines/albedo.png);
 }
