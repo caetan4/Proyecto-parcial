@@ -65,7 +65,7 @@ footer {
   
 }
 
-/* Nuevo link Instagram con Rock Salt */
+
 .insta {
   display: block;
   /*font-family: "Rock Salt", cursive; */
@@ -86,9 +86,9 @@ footer {
   bottom: 5vh;
   right: 2.2vh;
   width: 10vh;
+  
 }
 
-/* Texto de instrucciones con Big Shoulders */
 .instrucciones {
   position: absolute;
   bottom: 19vh; /* justo arriba del logo */
@@ -97,7 +97,7 @@ footer {
   font-family: "Big Shoulders", sans-serif;
   font-size: 3vh;
   line-height: 1.2;
-  color: rgb(76, 103, 255);
+  color: rgb(51, 64, 186);
 }
 
 
@@ -131,4 +131,9 @@ footer {
 #boton2 {
     color: rgb(59, 25, 19);
   background-image: url(assets/texturas/bricks/albedo.png);
+}
+
+#boton3 {
+    color: rgb(59, 25, 19);
+  background-image: url(assets/texturas/rusted/albedo.png);
 }

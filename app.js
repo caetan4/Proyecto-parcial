@@ -18,12 +18,14 @@ renderer.setClearColor(0x00019);
 
 const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
 camera.position.z = 7;
-// 3.1 Configurar mesh.
-//const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 5, 2);
-// const geo = new THREE.SphereGeometry(1.5, 128, 128);
-const geo = new THREE.IcosahedronGeometry(1.5, 4); // detail > 0 para displacement
-geo.setAttribute("uv2", new THREE.BufferAttribute(geo.attributes.uv.array, 2));
 
+// 3.1 Configurar mesh.
+//const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 2,2);
+//const geo = new THREE.SphereGeometry(1.5, 128, 128);
+const geom= new THREE.TorusGeometry( 3.4, 0.3, 16, 5 ); 
+const geo = new THREE.IcosahedronGeometry(1.5,4); 
+geo.setAttribute("uv2", new THREE.BufferAttribute(geo.attributes.uv.array, 2));
+geom.setAttribute("uv2", new THREE.BufferAttribute(geom.attributes.uv.array, 2));
 
 
 
@@ -31,6 +33,10 @@ geo.setAttribute("uv2", new THREE.BufferAttribute(geo.attributes.uv.array, 2));
 const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: "#ffffff" }));
 mesh.position.z = -7;
 scene.add(mesh);
+
+const mesh2 = new THREE.Mesh(geom, new THREE.MeshStandardMaterial({ color: "#ffffff" }));
+mesh.position.z = -0;
+scene.add(mesh2);
 
 // 3.2 Crear luces.
 const frontLight = new THREE.PointLight(0x1b046e, 1000, 100);
@@ -65,6 +71,8 @@ const floorMaterial = new THREE.MeshStandardMaterial({
 const manager = new THREE.LoadingManager();
 const loader = new THREE.TextureLoader(manager);
 
+const cubeTexLoader = new THREE.CubeTextureLoader(manager);
+
 const brickTexture = {
   albedo: loader.load('./assets/texturas/bricks/albedo.png'),
   ao: loader.load('./assets/texturas/bricks/ao.png'),
@@ -83,39 +91,73 @@ const lavaTextures = {
   displacement: loader.load('./assets/texturas/columned-lava-rock-unity/columned-lava-rock_height.png'),
 };
 
-let brickMaterial, lavaMaterial;
+const rustedTextures = {
+  albedo: loader.load('./assets/texturas/rusted/albedo.png'),
+  metalness: loader.load('./assets/texturas/rusted/metallic.png'),
+  normal: loader.load('./assets/texturas/rusted/normal.png'),
+  roughness: loader.load('./assets/texturas/rusted/roughness.png'),
+};
+
+let brickMaterial, lavaMaterial, rustedMaterial;
 
 function createMaterials() {
   brickMaterial = new THREE.MeshStandardMaterial({
+    envMap: envMap,
+    metalness: 2,
+    roughness: 0.4,
     map: brickTexture.albedo,
     aoMap: brickTexture.ao,
     normalMap: brickTexture.normal,
-    roughnessMap: brickTexture.roughness,
     displacementMap: brickTexture.displacement,
     displacementScale: 0.1,
-    metalness: 0.3,
     side: THREE.FrontSide,
   });
 
   lavaMaterial = new THREE.MeshStandardMaterial({
+    envMap: envMap,
+    metalness: 6,
+    roughness: 0,
+  
     map: lavaTextures.albedo,
     aoMap: lavaTextures.ao,
     normalMap: lavaTextures.normal,
-    metalness: 1,
-    metalnessMap: lavaTextures.metalness,
     emissiveMap: lavaTextures.emissive,
     emissive: new THREE.Color(0xffffff),
     displacementMap: lavaTextures.displacement,
+    
     displacementScale: 0.25,
     side: THREE.FrontSide,
   });
 
-  mesh.material = brickMaterial; // inicial por default
+  rustedMaterial = new THREE.MeshStandardMaterial({
+    envMap: envMap,
+    metalness: 1,
+   
+    map: rustedTextures.albedo,
+
+    normalMap: rustedTextures.normal,
+    roughnessMap: rustedTextures.roughness,
+    displacementScale: 0.25,
+    side: THREE.FrontSide,
+
+  });
+
+  mesh.material = brickMaterial;
+  
+  mesh2.material = lavaMaterial; // inicial por default
 }
 
 
+const envMap = cubeTexLoader.load([
+   './assets/texturas/fondo/posx.jpg', './assets/texturas/fondo/negx.jpg',   // +X, -X
+   './assets/texturas/fondo/posy.jpg', './assets/texturas/fondo/negy.jpg',   // +Y, -Y
+   './assets/texturas/fondo/posz.jpg', './assets/texturas/fondo/negz.jpg'    // +Z, -Z
+]);
 
 
+
+
+scene.background = envMap;
 
 manager.onLoad = function () {
   console.log("✅ Texturas listas");
@@ -125,13 +167,21 @@ manager.onLoad = function () {
 // 6. Botones
 const boton1 = document.getElementById("boton1");
 const boton2 = document.getElementById("boton2");
+const boton3 = document.getElementById("boton3");
 
 boton1.addEventListener("mousedown", function() {
   mesh.material = lavaMaterial;
+  mesh2.material = brickMaterial;
 });
 
 boton2.addEventListener("mousedown", function() {
   mesh.material = brickMaterial;
+  mesh2.material = rustedMaterial;
+});
+
+boton3.addEventListener("mousedown", function() {
+  mesh.material = rustedMaterial;
+  mesh2.material = lavaMaterial;
 });
 
 // 7. Scroll rotation
@@ -176,8 +226,6 @@ function lerpDistanceToCenter() {
 }
 
 
-
-
 // 9. Animación
 function animate() {
   requestAnimationFrame(animate);
@@ -194,10 +242,6 @@ function animate() {
 animate();
 
 
-
-
-
-
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -212,6 +256,13 @@ canvas.addEventListener("mousedown", () => {
         y: mesh.scale.y * 1.2,
         z: mesh.scale.z * 1.2,
         duration: 0.8,
+        ease: "bounce.out" // prueba otros easing si quieres
+    });
+    gsap.to(mesh2.scale, {
+        x: mesh2.scale.x * 1.3, // agranda 20%
+        y: mesh2.scale.y * 1.3,
+        z: mesh2.scale.z * 1.2,
+        duration: 0.5,
         ease: "bounce.out" // prueba otros easing si quieres
     });
 });
